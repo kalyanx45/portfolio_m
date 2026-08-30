@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Portfolio of a short-form video editor — reels, shorts, and long-form content." />
+  <title>Alex Rivera — Video Editor Portfolio</title>
+
+  <!-- Font Awesome 6 CDN — all icons sourced from here -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ==================================================================
+       PARTICLE CANVAS — light-trail system, fixed behind everything
+       Drawn via Canvas API (see script.js — trail technique)
+       ================================================================== -->
+  <canvas id="particleCanvas" aria-hidden="true"></canvas>
+
+
+  <!-- ==================================================================
+       NAVBAR — FILM STRIP STYLE
+       Top strip → inner bar → bottom strip
+       Sprocket holes injected via JS
+       ================================================================== -->
+  <nav class="navbar" id="navbar">
+
+    <!-- Sprocket hole strip — top edge -->
+    <div class="navbar__strip navbar__strip--top" id="stripTop"></div>
+
+    <div class="navbar__inner">
+
+      <!-- Clapperboard logo tag -->
+      <a href="#" class="navbar__logo">
+        <!-- PLACEHOLDER: Replace with real name/initials -->
+        <span class="navbar__logo-tag">AR</span>
+      </a>
+
+      <!-- Desktop nav links with REC dots -->
+      <div class="navbar__links" id="navLinks">
+        <a href="#shorts" class="navbar__link" data-section="shorts">
+          <span class="rec-dot"></span>Shorts
+        </a>
+        <a href="#longform" class="navbar__link" data-section="longform">
+          <span class="rec-dot"></span>Long-Form
+        </a>
+        <a href="#toolkit" class="navbar__link" data-section="toolkit">
+          <span class="rec-dot"></span>Toolkit
+        </a>
+        <a href="#about" class="navbar__link" data-section="about">
+          <span class="rec-dot"></span>About
+        </a>
+      </div>
+
+      <!-- PLACEHOLDER: Replace mailto link -->
+      <a href="mailto:hello@alexrivera.com" class="navbar__cta">Book a Call</a>
+
+      <button class="navbar__toggle" id="navToggle" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars" id="navToggleIcon"></i>
+      </button>
+    </div>
+
+    <!-- Sprocket hole strip — bottom edge -->
+    <div class="navbar__strip navbar__strip--bot" id="stripBot"></div>
+
+  </nav>
+
+  <!-- Full-screen mobile overlay menu -->
+  <div class="mobile-overlay" id="mobileOverlay">
+    <a href="#shorts" class="mobile-overlay__link" data-mobile-link>Shorts</a>
+    <a href="#longform" class="mobile-overlay__link" data-mobile-link>Long-Form</a>
+    <a href="#toolkit" class="mobile-overlay__link" data-mobile-link>Toolkit</a>
+    <a href="#about" class="mobile-overlay__link" data-mobile-link>About</a>
+    <a href="#contact" class="mobile-overlay__link mobile-overlay__link--cta" data-mobile-link>Book a Call</a>
+  </div>
+
+
+  <!-- ==================================================================
+       HERO — Name (fade+slide) → Assembled secondaries
+       .hero__assemble elements get random transforms via JS then settle
+       ================================================================== -->
+  <section class="hero" id="hero">
+    <div class="container hero__inner">
+
+      <!-- PLACEHOLDER: Replace name. data-text drives ghost effect. -->
+      <h1 class="hero__name ghost-text" id="heroName" data-text="Alex Rivera">
+        Alex<br/><span class="accent">Rivera</span>
+      </h1>
+
+      <!-- PLACEHOLDER: Replace tagline -->
+      <p class="hero__tagline hero__assemble" id="heroTagline">
+        Short-form video editor crafting scroll-stopping content for creators,
+        brands, and agencies. Turning raw footage into stories that move fast and hit hard.
+      </p>
+
+      <!-- PLACEHOLDER: Replace stat values -->
+      <div class="hero__stats">
+        <div class="hero__stat hero__assemble" id="heroStat0">
+          <div class="hero__stat-label">Based in</div>
+          <div class="hero__stat-value">Los Angeles, CA</div>
+        </div>
+        <div class="hero__stat hero__assemble" id="heroStat1">
+          <div class="hero__stat-label">Experience</div>
+          <div class="hero__stat-value">4+ Years</div>
+        </div>
+        <div class="hero__stat hero__assemble" id="heroStat2">
+          <div class="hero__stat-label">Specialty</div>
+          <div class="hero__stat-value">Reels &amp; Shorts</div>
+        </div>
+      </div>
+
+      <div class="hero__scroll-cue hero__assemble" id="heroScrollCue">
+        <i class="fa-solid fa-chevron-down"></i>
+        Scroll to play
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ==================================================================
+       SHORTS — V1
+       Grid of short-form video glass cards (portrait / 9:16)
+       ================================================================== -->
+  <section class="section" id="shorts">
+    <div class="container">
+      <div class="section-label reveal">
+        <span class="label-dot"></span> V1 — Short-Form
+      </div>
+
+      <!-- PLACEHOLDER: Replace each card's image src, title, and meta -->
+      <div class="video-grid--shorts reveal-stagger">
+
+        <div class="video-card reveal" style="--i:0" data-tilt>
+          <div class="video-card__thumb">
+            <!-- PLACEHOLDER: Replace with real thumbnail -->
+            <img src="https://picsum.photos/seed/short-brand/400/710" alt="Brand Promo Reel thumbnail" loading="lazy" />
+            <div class="video-card__play-icon"><i class="fa-solid fa-play"></i></div>
+          </div>
+          <div class="video-card__info">
+            <div class="video-card__title">Brand Promo Reel</div>
+            <div class="video-card__meta">Instagram Reel · 30s</div>
+          </div>
+        </div>
+
+        <div class="video-card reveal" style="--i:1" data-tilt>
+          <div class="video-card__thumb">
+            <!-- PLACEHOLDER: Replace with real thumbnail -->
+            <img src="https://picsum.photos/seed/short-launch/400/710" alt="Product Launch Teaser thumbnail" loading="lazy" />
+            <div class="video-card__play-icon"><i class="fa-solid fa-play"></i></div>
+          </div>
+          <div class="video-card__info">
+            <div class="video-card__title">Product Launch Teaser</div>
+            <div class="video-card__meta">TikTok · 15s</div>
+          </div>
+        </div>
+
+        <div class="video-card reveal" style="--i:2" data-tilt>
+          <div class="video-card__thumb">
+            <!-- PLACEHOLDER: Replace with real thumbnail -->
+            <img src="https://picsum.photos/seed/short-vlog/400/710" alt="Day-in-the-Life Vlog thumbnail" loading="lazy" />
+            <div class="video-card__play-icon"><i class="fa-solid fa-play"></i></div>
+          </div>
+          <div class="video-card__info">
+            <div class="video-card__title">Day-in-the-Life Vlog</div>
+            <div class="video-card__meta">YouTube Short · 58s</div>
+          </div>
+        </div>
+
+        <div class="video-card reveal" style="--i:3" data-tilt>
+          <div class="video-card__thumb">
+            <!-- PLACEHOLDER: Replace with real thumbnail -->
+            <img src="https://picsum.photos/seed/short-fitness/400/710" alt="Fitness Transition Edit thumbnail" loading="lazy" />
+            <div class="video-card__play-icon"><i class="fa-solid fa-play"></i></div>
+          </div>
+          <div class="video-card__info">
+            <div class="video-card__title">Fitness Transition Edit</div>
+            <div class="video-card__meta">Instagram Reel · 22s</div>
+          </div>
+        </div>
+
+        <div class="video-card reveal" style="--i:4" data-tilt>
+          <div class="video-card__thumb">
+            <!-- PLACEHOLDER: Replace with real thumbnail -->
+            <img src="https://picsum.photos/seed/short-music/400/710" alt="Music Video Snippet thumbnail" loading="lazy" />
+            <div class="video-card__play-icon"><i class="fa-solid fa-play"></i></div>
+          </div>
+          <div class="video-card__info">
+            <div class="video-card__title">Music Video Snippet</div>
+            <div class="video-card__meta">TikTok · 45s</div>
+          </div>
+        </div>
+
+        <div class="video-card reveal" style="--i:5" data-tilt>
+          <div class="video-card__thumb">
+            <!-- PLACEHOLDER: Replace with real thumbnail -->
+            <img src="https://picsum.photos/seed/short-travel/400/710" alt="Travel Montage thumbnail" loading="lazy" />
+            <div class="video-card__play-icon"><i class="fa-solid fa-play"></i></div>
+          </div>
+          <div class="video-card__info">
+            <div class="video-card__title">Travel Montage</div>
+            <div class="video-card__meta">YouTube Short · 60s</div>
+          </div>
+        </div>
+
+        <div class="video-card reveal" style="--i:6" data-tilt>
+          <div class="video-card__thumb">
+            <!-- PLACEHOLDER: Replace with real thumbnail -->
+            <img src="https://picsum.photos/seed/short-podcast/400/710" alt="Podcast Clip thumbnail" loading="lazy" />
+            <div class="video-card__play-icon"><i class="fa-solid fa-play"></i></div>
+          </div>
+          <div class="video-card__info">
+            <div class="video-card__title">Podcast Clip</div>
+            <div class="video-card__meta">Instagram Reel · 35s</div>
+          </div>
+        </div>
+
+        <div class="video-card reveal" style="--i:7" data-tilt>
+          <div class="video-card__thumb">
+            <!-- PLACEHOLDER: Replace with real thumbnail -->
+            <img src="https://picsum.photos/seed/short-food/400/710" alt="Food Review Edit thumbnail" loading="lazy" />
+            <div class="video-card__play-icon"><i class="fa-solid fa-play"></i></div>
+          </div>
+          <div class="video-card__info">
+            <div class="video-card__title">Food Review Edit</div>
+            <div class="video-card__meta">TikTok · 28s</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================================================================
+       LONG-FORM — V2
+       ================================================================== -->
+  <section class="section" id="longform">
+    <div class="container">
+      <div class="section-label reveal">
+        <span class="label-dot"></span> V2 — Long-Form
+      </div>
+
+      <div class="video-grid--long reveal-stagger">
+
+        <div class="video-card reveal" style="--i:0" data-tilt>
+          <div class="video-card__thumb">
+            <img src="https://picsum.photos/seed/long-studio/720/405" alt="Studio Tour thumbnail" loading="lazy" />
+            <div class="video-card__play-icon"><i class="fa-solid fa-play"></i></div>
+          </div>
+          <div class="video-card__info">
+            <div class="video-card__title">Behind the Scenes — Studio Tour</div>
+            <div class="video-card__meta">YouTube · 12 min</div>
+          </div>
+        </div>
+
+        <div class="video-card reveal" style="--i:1" data-tilt>
+          <div class="video-card__thumb">
+            <img src="https://picsum.photos/seed/long-docu/720/405" alt="Brand Documentary thumbnail" loading="lazy" />
+            <div class="video-card__play-icon"><i class="fa-solid fa-play"></i></div>
+          </div>
+          <div class="video-card__info">
+            <div class="video-card__title">Brand Documentary — The Grind</div>
+            <div class="video-card__meta">Client Work · 8 min</div>
+          </div>
+        </div>
+
+        <div class="video-card reveal" style="--i:2" data-tilt>
+          <div class="video-card__thumb">
+            <img src="https://picsum.photos/seed/long-event/720/405" alt="Event Recap thumbnail" loading="lazy" />
+            <div class="video-card__play-icon"><i class="fa-solid fa-play"></i></div>
+          </div>
+          <div class="video-card__info">
+            <div class="video-card__title">Event Recap — Creator Summit 2025</div>
+            <div class="video-card__meta">YouTube · 15 min</div>
+          </div>
+        </div>
+
+        <div class="video-card reveal" style="--i:3" data-tilt>
+          <div class="video-card__thumb">
+            <img src="https://picsum.photos/seed/long-podcast/720/405" alt="Podcast Episode thumbnail" loading="lazy" />
+            <div class="video-card__play-icon"><i class="fa-solid fa-play"></i></div>
+          </div>
+          <div class="video-card__info">
+            <div class="video-card__title">Podcast Full Episode — Editing Workflow</div>
+            <div class="video-card__meta">YouTube · 42 min</div>
+          </div>
+        </div>
+
+        <div class="video-card reveal" style="--i:4" data-tilt>
+          <div class="video-card__thumb">
+            <img src="https://picsum.photos/seed/long-tutorial/720/405" alt="Tutorial thumbnail" loading="lazy" />
+            <div class="video-card__play-icon"><i class="fa-solid fa-play"></i></div>
+          </div>
+          <div class="video-card__info">
+            <div class="video-card__title">Tutorial — Smooth Transitions in Premiere</div>
+            <div class="video-card__meta">YouTube · 18 min</div>
+          </div>
+        </div>
+
+        <div class="video-card reveal" style="--i:5" data-tilt>
+          <div class="video-card__thumb">
+            <img src="https://picsum.photos/seed/long-street/720/405" alt="Mini-Doc thumbnail" loading="lazy" />
+            <div class="video-card__play-icon"><i class="fa-solid fa-play"></i></div>
+          </div>
+          <div class="video-card__info">
+            <div class="video-card__title">Mini-Doc — Street Photography</div>
+            <div class="video-card__meta">Personal · 10 min</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================================================================
+       TOOLKIT — A1
+       ================================================================== -->
+  <section class="section" id="toolkit">
+    <div class="container">
+      <div class="section-label reveal">
+        <span class="label-dot"></span> A1 — Toolkit
+      </div>
+
+      <div class="toolkit__grid reveal-stagger">
+
+        <div class="toolkit__badge reveal" style="--i:0">
+          <div class="toolkit__badge-icon"><i class="fa-solid fa-film"></i></div>
+          <div>
+            <div class="toolkit__badge-name">Adobe Premiere Pro</div>
+            <div class="toolkit__badge-desc">Primary NLE · Timeline editing</div>
+          </div>
+        </div>
+
+        <div class="toolkit__badge reveal" style="--i:1">
+          <div class="toolkit__badge-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+          <div>
+            <div class="toolkit__badge-name">After Effects</div>
+            <div class="toolkit__badge-desc">Motion graphics · VFX</div>
+          </div>
+        </div>
+
+        <div class="toolkit__badge reveal" style="--i:2">
+          <div class="toolkit__badge-icon"><i class="fa-solid fa-image"></i></div>
+          <div>
+            <div class="toolkit__badge-name">Adobe Photoshop</div>
+            <div class="toolkit__badge-desc">Thumbnails · Graphics</div>
+          </div>
+        </div>
+
+        <div class="toolkit__badge reveal" style="--i:3">
+          <div class="toolkit__badge-icon"><i class="fa-solid fa-scissors"></i></div>
+          <div>
+            <div class="toolkit__badge-name">CapCut</div>
+            <div class="toolkit__badge-desc">Quick edits · Short-form</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================================================================
+       ABOUT — ghost text on heading
+       ================================================================== -->
+  <section class="section" id="about">
+    <div class="container">
+      <div class="section-label reveal">
+        <span class="label-dot"></span> About
+      </div>
+
+      <div class="about__inner reveal">
+        <!-- PLACEHOLDER: Replace src with real photo -->
+        <div class="about__photo">
+          <img src="https://picsum.photos/seed/editor-profile/500/500" alt="Profile photo of Alex Rivera" loading="lazy" />
+        </div>
+
+        <div class="about__content">
+          <!-- PLACEHOLDER: Replace heading and bio -->
+          <h2 class="about__heading ghost-text" data-text="Cuts that keep them watching.">Cuts that keep them watching.</h2>
+          <p class="about__bio">
+            I'm Alex Rivera, a self-taught video editor based in Los Angeles with over
+            four years of experience crafting content for creators, DTC brands, and digital
+            agencies. I specialize in punchy, fast-paced short-form content — the kind that
+            stops the scroll and keeps eyes locked.
+          </p>
+          <p class="about__bio">
+            From concept to final export, I handle the full post-production pipeline:
+            rough cuts, color grading, motion graphics, sound design, and delivery across
+            every platform. Whether it's a 15-second TikTok or a 20-minute brand documentary,
+            I bring the same obsessive attention to pacing, rhythm, and story.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================================================================
+       CONTACT / CTA — ghost text on heading
+       ================================================================== -->
+  <section class="contact" id="contact">
+    <div class="container">
+
+      <h2 class="contact__heading ghost-heading reveal" data-text="Let's make something great.">Let's make<br/>something great.</h2>
+      <p class="contact__sub reveal">Got a project, a deadline, or just a wild idea? I'm all ears.</p>
+
+      <!-- PLACEHOLDER: Replace mailto link -->
+      <a href="mailto:hello@alexrivera.com" class="contact__cta-btn reveal">
+        <i class="fa-solid fa-arrow-right"></i>
+        Get in Touch
+      </a>
+
+      <!-- PLACEHOLDER: Replace all links/handles below -->
+      <div class="contact__links reveal-stagger">
+
+        <a href="mailto:hello@alexrivera.com" class="contact__link reveal" style="--i:0">
+          <i class="fa-solid fa-envelope"></i>
+          hello@alexrivera.com
+        </a>
+
+        <a href="https://instagram.com/alexrivera" target="_blank" rel="noopener" class="contact__link reveal" style="--i:1">
+          <i class="fa-brands fa-instagram"></i>
+          @alexrivera
+        </a>
+
+        <a href="https://discord.gg/placeholder" target="_blank" rel="noopener" class="contact__link reveal" style="--i:2">
+          <i class="fa-brands fa-discord"></i>
+          Discord
+        </a>
+
+        <a href="tel:+11234567890" class="contact__link reveal" style="--i:3">
+          <i class="fa-solid fa-phone"></i>
+          +1 (123) 456-7890
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================================================================
+       FOOTER
+       ================================================================== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <span class="footer__name">Alex Rivera</span>
+        <span class="footer__copy">&copy; 2025 — All rights reserved</span>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="script.js"></script>
+</body>
+</html>
