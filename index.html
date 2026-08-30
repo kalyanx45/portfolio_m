@@ -78,42 +78,36 @@
 
 
   <!-- ==================================================================
-       HERO — Name (fade+slide) → Assembled secondaries
-       .hero__assemble elements get random transforms via JS then settle
+       HERO — Left-aligned editorial layout
+       Name → 1px Divider → Eyebrow → Large Bold Statement → Scroll cue
        ================================================================== -->
   <section class="hero" id="hero">
     <div class="container hero__inner">
 
       <!-- PLACEHOLDER: Replace name. data-text drives ghost effect. -->
       <h1 class="hero__name ghost-text" id="heroName" data-text="Alex Rivera">
-        Alex<br/><span class="accent">Rivera</span>
+        Alex <span class="accent">Rivera</span>
       </h1>
 
-      <!-- PLACEHOLDER: Replace tagline -->
-      <p class="hero__tagline hero__assemble" id="heroTagline">
-        Short-form video editor crafting scroll-stopping content for creators,
-        brands, and agencies. Turning raw footage into stories that move fast and hit hard.
-      </p>
+      <!-- Full-width 1px horizontal divider -->
+      <div class="hero__divider"></div>
 
-      <!-- PLACEHOLDER: Replace stat values -->
-      <div class="hero__stats">
-        <div class="hero__stat hero__assemble" id="heroStat0">
-          <div class="hero__stat-label">Based in</div>
-          <div class="hero__stat-value">Los Angeles, CA</div>
-        </div>
-        <div class="hero__stat hero__assemble" id="heroStat1">
-          <div class="hero__stat-label">Experience</div>
-          <div class="hero__stat-value">4+ Years</div>
-        </div>
-        <div class="hero__stat hero__assemble" id="heroStat2">
-          <div class="hero__stat-label">Specialty</div>
-          <div class="hero__stat-value">Reels &amp; Shorts</div>
-        </div>
+      <!-- Small uppercase eyebrow label -->
+      <div class="hero__eyebrow">
+        <span class="hero__eyebrow-tag">SHORT-FORM VIDEO EDITOR</span>
+        <span class="hero__eyebrow-meta">LOS ANGELES, CA &bull; 4+ YEARS EXP</span>
       </div>
 
+      <!-- Large, bold statement line (scatter-assembled by JS) -->
+      <!-- PLACEHOLDER: Replace statement -->
+      <h2 class="hero__statement hero__assemble" id="heroTagline">
+        Crafting high-retention, scroll-stopping edits that turn raw footage into magnetic stories.
+      </h2>
+
+      <!-- Scroll cue -->
       <div class="hero__scroll-cue hero__assemble" id="heroScrollCue">
-        <i class="fa-solid fa-chevron-down"></i>
-        Scroll to play
+        <i class="fa-solid fa-arrow-down"></i>
+        Scroll to view work
       </div>
 
     </div>

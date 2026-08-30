@@ -229,113 +229,105 @@
   /* ======================================================================
      3. HERO ASSEMBLE — Letter-scatter animation
 
-     Tagline: split into individual letter <span>s, each scattered to a
+     Statement: split into individual letter <span>s wrapped in word containers
+     (prevents mid-word line-wrapping bugs). Each letter is scattered to a
      random offset/rotation near its final position, then assembled
-     left-to-right with 15-20ms per-letter stagger.
+     left-to-right with 16ms per-letter stagger.
 
-     Stat values: same treatment, staggered right after tagline finishes.
-
-     Scroll cue: whole-element spring-in (kept as before).
+     Scroll cue: whole-element spring-in after statement completes.
 
      Name: CSS animation only (fade+slide, defined in stylesheet).
      ====================================================================== */
 
   /**
-   * Split the text content of `el` into individual letter <span>s.
-   * Spaces become non-breaking spaces to preserve layout.
+   * Split the text content of `el` into words, and words into letter <span>s.
+   * Word spans prevent mid-word wrapping glitches while allowing letters
+   * to animate independently.
    * Returns array of all letter spans created.
    */
   function splitIntoLetters(el) {
-    const text = el.textContent;
+    const text = el.textContent.trim();
     el.textContent = '';
-    const spans = [];
+    const words = text.split(/\s+/);
+    const letterSpans = [];
 
-    for (let i = 0; i < text.length; i++) {
-      const ch = text[i];
-      const span = document.createElement('span');
-      span.className = 'scatter-letter';
-      // Preserve spaces so line-wrapping stays natural
-      span.textContent = ch === ' ' ? '\u00A0' : ch;
-      el.appendChild(span);
-      spans.push(span);
-    }
-    return spans;
+    words.forEach((word, wIdx) => {
+      const wordSpan = document.createElement('span');
+      wordSpan.className = 'scatter-word';
+
+      for (let i = 0; i < word.length; i++) {
+        const span = document.createElement('span');
+        span.className = 'scatter-letter';
+        span.textContent = word[i];
+        wordSpan.appendChild(span);
+        letterSpans.push(span);
+      }
+
+      el.appendChild(wordSpan);
+
+      // Add a standard space between words for natural browser wrapping
+      if (wIdx < words.length - 1) {
+        el.appendChild(document.createTextNode(' '));
+      }
+    });
+
+    return letterSpans;
   }
 
   /**
    * Apply a randomised scatter transform to a letter span.
-   * Offset is bounded so letters stay close-ish to final spot.
+   * Offset is bounded so letters stay close to final spot.
    */
   function scatterLetter(span) {
-    const tx  = (Math.random() - 0.5) * 180;  // ±90px horizontal
-    const ty  = (Math.random() - 0.5) * 140;  // ±70px vertical
-    const rot = (Math.random() - 0.5) * 90;   // ±45°
-    const op  = (Math.random() * 0.3);         // 0–0.3 opacity
+    const tx  = (Math.random() - 0.5) * 160;  // ±80px horizontal
+    const ty  = (Math.random() - 0.5) * 120;  // ±60px vertical
+    const rot = (Math.random() - 0.5) * 70;   // ±35°
+    const op  = (Math.random() * 0.25);        // 0–0.25 opacity
     span.style.opacity   = op;
     span.style.transform = `translate(${tx}px, ${ty}px) rotate(${rot}deg)`;
   }
 
   /**
    * Animate a letter span into its natural (final) position.
-   * Uses a CSS transition triggered by removing the transform.
+   * Triggers CSS transition by adding .assembled class.
    */
   function assembleLetter(span) {
-    // Transition defined in CSS for .scatter-letter — adding .assembled clears transform
     span.classList.add('assembled');
   }
 
   function initHeroAssemble() {
     // ── Collect targets ──────────────────────────────────────────────
-    const taglineEl    = document.getElementById('heroTagline');
-    const statValue0   = document.querySelector('#heroStat0 .hero__stat-value');
-    const statValue1   = document.querySelector('#heroStat1 .hero__stat-value');
-    const statValue2   = document.querySelector('#heroStat2 .hero__stat-value');
-    const scrollCueEl  = document.getElementById('heroScrollCue');
+    const statementEl = document.getElementById('heroTagline');
+    const scrollCueEl = document.getElementById('heroScrollCue');
 
-    if (!taglineEl) return;
+    if (!statementEl) return;
 
-    // ── Split into letter spans ───────────────────────────────────────
-    const taglineLetters = splitIntoLetters(taglineEl);
-    const stat0Letters   = statValue0 ? splitIntoLetters(statValue0) : [];
-    const stat1Letters   = statValue1 ? splitIntoLetters(statValue1) : [];
-    const stat2Letters   = statValue2 ? splitIntoLetters(statValue2) : [];
+    // ── Split statement into letter spans inside word wrappers ────────
+    const statementLetters = splitIntoLetters(statementEl);
 
-    // Full ordered sequence: tagline first, then stat groups, then scroll cue
-    const allLetterGroups = [
-      taglineLetters,
-      stat0Letters,
-      stat1Letters,
-      stat2Letters,
-    ];
+    // ── Scatter statement letters immediately (before first paint) ────
+    statementEl.style.opacity = '1';
+    statementLetters.forEach(scatterLetter);
 
-    // Flatten all letter spans into one ordered array
-    const allLetters = allLetterGroups.flat();
-
-    // ── Scatter everything immediately (before first paint) ───────────
-    // Make the whole tagline / stat containers invisible until we scatter
-    // (avoids a flash of assembled state before JS kicks in)
-    taglineEl.style.opacity = '1'; // container stays, only letters are positioned
-    allLetters.forEach(scatterLetter);
-
-    // Also scatter the scroll cue as a whole element (no letter split)
+    // Also scatter the scroll cue as a whole element
     if (scrollCueEl) {
-      scrollCueEl.style.transform = 'translateY(60px) scale(0.7)';
+      scrollCueEl.style.transform = 'translateY(40px) scale(0.85)';
       scrollCueEl.style.opacity   = '0';
     }
 
     // ── Timing ───────────────────────────────────────────────────────
-    const NAME_SETTLE_MS  = 650;   // wait for name CSS animation to finish
-    const STAGGER_MS      = 18;    // delay between each letter
-    const SCROLL_CUE_EXTRA = 200; // extra delay after last letter before scroll cue appears
+    const NAME_SETTLE_MS   = 600;  // wait for name CSS animation to finish
+    const STAGGER_MS       = 16;   // delay between each letter
+    const SCROLL_CUE_EXTRA = 180;  // extra delay after last letter before scroll cue appears
 
-    // ── Assemble letters one by one ───────────────────────────────────
-    allLetters.forEach((span, i) => {
+    // ── Assemble letters one by one in a wave ─────────────────────────
+    statementLetters.forEach((span, i) => {
       setTimeout(() => assembleLetter(span), NAME_SETTLE_MS + i * STAGGER_MS);
     });
 
-    // ── Scroll cue springs in after all letters are done ─────────────
+    // ── Scroll cue springs in after all letters are done ──────────────
     if (scrollCueEl) {
-      const scrollCueDelay = NAME_SETTLE_MS + allLetters.length * STAGGER_MS + SCROLL_CUE_EXTRA;
+      const scrollCueDelay = NAME_SETTLE_MS + statementLetters.length * STAGGER_MS + SCROLL_CUE_EXTRA;
       setTimeout(() => {
         scrollCueEl.style.transition = 'transform 0.65s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.5s ease';
         scrollCueEl.style.transform  = 'none';
