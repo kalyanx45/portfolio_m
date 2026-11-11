@@ -402,8 +402,8 @@ img { display: block; max-width: 100%; }
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* Push below fixed film-strip navbar (~72px tall) */
-  padding: 120px 0 60px;
+  /* Push comfortably below fixed film-strip navbar (~72px tall) */
+  padding: 150px 0 80px;
   position: relative;
   z-index: 2;
 }
@@ -416,7 +416,7 @@ img { display: block; max-width: 100%; }
   text-align: left;
 }
 
-/* Name — simple fade+slide entrance via CSS animation */
+/* Name — scatter/assemble driven entirely by JS (no CSS animation) */
 .hero__name {
   font-size: clamp(3.2rem, 9.5vw, 7.5rem);
   font-weight: 900;
@@ -426,13 +426,7 @@ img { display: block; max-width: 100%; }
   margin-bottom: 24px;
   text-align: left;
   overflow: visible;
-  opacity: 0;
-  transform: translateY(22px);
-  animation: name-entrance 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
-}
-
-@keyframes name-entrance {
-  to { opacity: 1; transform: translateY(0); }
+  opacity: 1; /* JS will scatter individual letters; keep container visible */
 }
 
 .hero__name .accent {
@@ -538,6 +532,40 @@ img { display: block; max-width: 100%; }
 /* ==========================================================================
    VIDEO CARDS — 3D tilt via JS
    ========================================================================== */
+/* ==========================================================================
+   VIDEO CARDS & EMBEDS (Talking Head & Real Estate)
+   ========================================================================== */
+
+/* Unified Work video grid — pristine vertical reel cards */
+.video-grid--work {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 32px;
+  justify-content: center;
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+/* Talking head vertical video grid — generous size like authentic smartphone screens */
+.video-grid--talking-head {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 380px));
+  justify-content: center;
+  gap: 36px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Real estate video grid — vertical reel cards matching talking head style */
+.video-grid--realestate {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 340px));
+  justify-content: center;
+  gap: 32px;
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
 .video-grid--shorts {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -557,16 +585,77 @@ img { display: block; max-width: 100%; }
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
   overflow: hidden;
-  cursor: pointer;
   transition:
     border-color 0.28s ease,
-    box-shadow 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  transform-style: preserve-3d;
+    box-shadow 0.35s ease,
+    transform 0.35s ease;
   will-change: transform;
 }
 
-.video-card:hover { border-color: var(--glass-border-hover); }
+.video-card:hover { 
+  border-color: var(--glass-border-hover); 
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* High-end container for embedded video players (Google Drive, YouTube) */
+.video-card--embed {
+  background: rgba(10, 16, 25, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+}
+
+.video-card--embed:hover {
+  border-color: rgba(45, 212, 191, 0.35);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.5), 0 0 30px rgba(45, 212, 191, 0.12);
+  transform: translateY(-4px);
+}
+
+/* Featured real estate video spanning full width */
+.video-card--featured {
+  grid-column: 1 / -1;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Embed wrapper for vertical/9:16 videos (talking heads) */
+.video-card__embed-wrap {
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  min-height: 560px;
+  background: #000;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Embed wrapper for landscape/16:9 videos (real estate) */
+.video-card__embed-wrap--landscape {
+  aspect-ratio: 16 / 9;
+  min-height: 480px;
+}
+
+@media (max-width: 900px) {
+  .video-card__embed-wrap--landscape {
+    min-height: 360px;
+  }
+}
+
+@media (max-width: 600px) {
+  .video-card__embed-wrap--landscape {
+    min-height: 240px;
+  }
+}
+
+/* The iframe itself */
+.video-card__embed-wrap iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
 
 .video-card__thumb {
   width: 100%;
@@ -613,16 +702,79 @@ img { display: block; max-width: 100%; }
   font-size: 1.1rem;
 }
 
-.video-card__info { padding: 16px 20px; }
+.video-card__info { padding: 18px 24px; }
 
 .video-card__title {
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 4px;
 }
 
-.video-card__meta { font-size: 0.75rem; color: var(--text-muted); }
+.video-card__meta { font-size: 0.78rem; color: var(--text-muted); }
+
+/* ==========================================================================
+   CLIENT CARDS — Instagram / social work links
+   ========================================================================== */
+.client-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.client-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  border-radius: var(--radius);
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  transition:
+    transform 0.28s ease,
+    box-shadow 0.28s ease,
+    border-color 0.28s ease,
+    color 0.28s ease;
+}
+
+.client-card:hover {
+  color: var(--text-primary);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+}
+
+.client-card__icon {
+  width: 44px; height: 44px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-subtle);
+  border: 1px solid rgba(45, 212, 191, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.client-card__info { flex: 1; min-width: 0; }
+.client-card__title { font-size: 0.88rem; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+.client-card__meta  { font-size: 0.72rem; color: var(--text-muted); }
+
+.client-card__ext {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  transition: color 0.25s ease, transform 0.25s ease;
+  flex-shrink: 0;
+}
+
+.client-card:hover .client-card__ext {
+  color: var(--accent);
+  transform: translate(2px, -2px);
+}
 
 /* ==========================================================================
    TOOLKIT
@@ -859,6 +1011,14 @@ img { display: block; max-width: 100%; }
   .hero { padding: 90px 0 30px; min-height: auto; }
   .hero__name { letter-spacing: -1.5px; }
 
+  .video-grid--work,
+  .video-grid--talking-head,
+  .video-grid--realestate {
+    grid-template-columns: 1fr;
+    max-width: 380px;
+  }
+  .video-card__embed-wrap { min-height: 480px; }
+
   .video-grid--shorts { grid-template-columns: repeat(2, 1fr); gap: 16px; }
   .video-grid--long { grid-template-columns: 1fr; gap: 20px; }
 
@@ -869,6 +1029,8 @@ img { display: block; max-width: 100%; }
   .about__photo { max-width: 240px; }
 
   .contact__links { flex-direction: column; align-items: center; }
+
+  .client-grid { grid-template-columns: 1fr; }
 
   .footer__inner { flex-direction: column; text-align: center; }
 

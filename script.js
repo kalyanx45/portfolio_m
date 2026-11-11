@@ -17,6 +17,12 @@
 (function () {
   'use strict';
 
+  // Force page to top on reload so hero name is never obscured by scroll restoration
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  window.scrollTo(0, 0);
+
   // Teal accent RGB
   const AC_R = 45, AC_G = 212, AC_B = 191;
 
@@ -275,14 +281,73 @@
   }
 
   /**
+   * Like splitIntoLetters but traverses child nodes so CSS classes on
+   * child elements (e.g. the .accent span on "sudhan") are inherited by
+   * each individual letter span — preserving the teal gradient on those letters.
+   */
+  function splitNameIntoLetters(el) {
+    const childNodes = Array.from(el.childNodes);
+    // Clear element while keeping a reference to children
+    while (el.firstChild) el.removeChild(el.firstChild);
+
+    const letterSpans = [];
+    let currentWord  = [];   // buffer of letter spans forming the current word
+
+    function flushWord() {
+      if (currentWord.length === 0) return;
+      const wordSpan = document.createElement('span');
+      wordSpan.className = 'scatter-word';
+      currentWord.forEach(s => wordSpan.appendChild(s));
+      el.appendChild(wordSpan);
+      currentWord = [];
+    }
+
+    childNodes.forEach(node => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        // Plain text — split normally
+        for (const ch of node.textContent) {
+          if (ch.trim() === '') {
+            flushWord();
+            el.appendChild(document.createTextNode(' '));
+          } else {
+            const span = document.createElement('span');
+            span.className = 'scatter-letter';
+            span.textContent = ch;
+            currentWord.push(span);
+            letterSpans.push(span);
+          }
+        }
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        // Child element (e.g. <span class="accent">) — inherit its classes
+        for (const ch of node.textContent) {
+          if (ch.trim() === '') {
+            flushWord();
+            el.appendChild(document.createTextNode(' '));
+          } else {
+            const span = document.createElement('span');
+            // Combine scatter-letter with the child element's classes (e.g. accent)
+            span.className = ('scatter-letter ' + (node.className || '')).trim();
+            span.textContent = ch;
+            currentWord.push(span);
+            letterSpans.push(span);
+          }
+        }
+      }
+    });
+
+    flushWord();
+    return letterSpans;
+  }
+
+  /**
    * Apply a randomised scatter transform to a letter span.
    * Offset is bounded so letters stay close to final spot.
    */
-  function scatterLetter(span) {
-    const tx  = (Math.random() - 0.5) * 160;  // ±80px horizontal
-    const ty  = (Math.random() - 0.5) * 120;  // ±60px vertical
-    const rot = (Math.random() - 0.5) * 70;   // ±35°
-    const op  = (Math.random() * 0.25);        // 0–0.25 opacity
+  function scatterLetter(span, intensity = 1) {
+    const tx  = (Math.random() - 0.5) * 160 * intensity;  // ±80px × intensity
+    const ty  = (Math.random() - 0.5) * 120 * intensity;  // ±60px × intensity
+    const rot = (Math.random() - 0.5) * 70  * intensity;  // ±35° × intensity
+    const op  = (Math.random() * 0.25);                    // 0–0.25 opacity
     span.style.opacity   = op;
     span.style.transform = `translate(${tx}px, ${ty}px) rotate(${rot}deg)`;
   }
@@ -297,17 +362,27 @@
 
   function initHeroAssemble() {
     // ── Collect targets ──────────────────────────────────────────────
+    const nameEl      = document.getElementById('heroName');
     const statementEl = document.getElementById('heroTagline');
     const scrollCueEl = document.getElementById('heroScrollCue');
 
     if (!statementEl) return;
 
-    // ── Split statement into letter spans inside word wrappers ────────
-    const statementLetters = splitIntoLetters(statementEl);
+    // ── Split BOTH name and statement into letter spans ───────────────
+    const nameLetters      = nameEl ? splitNameIntoLetters(nameEl) : [];   // preserves .accent
+    const statementLetters =          splitIntoLetters(statementEl);
 
-    // ── Scatter statement letters immediately (before first paint) ────
+    // ── Cancel the CSS name-entrance animation (we'll drive it via JS) ─
+    if (nameEl) {
+      nameEl.style.animation  = 'none';
+      nameEl.style.opacity    = '1';
+      nameEl.style.transform  = 'none';
+    }
+
+    // ── Scatter everything immediately (before first paint) ───────────
+    nameLetters.forEach(span => scatterLetter(span, 2));  // name letters scatter extra wide
     statementEl.style.opacity = '1';
-    statementLetters.forEach(scatterLetter);
+    statementLetters.forEach(span => scatterLetter(span));
 
     // Also scatter the scroll cue as a whole element
     if (scrollCueEl) {
@@ -316,18 +391,26 @@
     }
 
     // ── Timing ───────────────────────────────────────────────────────
-    const NAME_SETTLE_MS   = 600;  // wait for name CSS animation to finish
-    const STAGGER_MS       = 16;   // delay between each letter
-    const SCROLL_CUE_EXTRA = 180;  // extra delay after last letter before scroll cue appears
+    const INITIAL_DELAY    = 100;   // brief pause before name starts assembling
+    const STAGGER_MS       = 22;    // delay between each name letter
+    const GAP_AFTER_NAME   = 180;   // pause between name done and tagline starts
+    const TAG_STAGGER_MS   = 16;    // delay between each tagline letter
+    const SCROLL_CUE_EXTRA = 180;   // extra delay after tagline before scroll cue
 
-    // ── Assemble letters one by one in a wave ─────────────────────────
-    statementLetters.forEach((span, i) => {
-      setTimeout(() => assembleLetter(span), NAME_SETTLE_MS + i * STAGGER_MS);
+    // ── 1. Assemble NAME letters first ───────────────────────────────
+    nameLetters.forEach((span, i) => {
+      setTimeout(() => assembleLetter(span), INITIAL_DELAY + i * STAGGER_MS);
     });
 
-    // ── Scroll cue springs in after all letters are done ──────────────
+    // ── 2. Assemble TAGLINE letters after name is done ────────────────
+    const taglineStart = INITIAL_DELAY + nameLetters.length * STAGGER_MS + GAP_AFTER_NAME;
+    statementLetters.forEach((span, i) => {
+      setTimeout(() => assembleLetter(span), taglineStart + i * TAG_STAGGER_MS);
+    });
+
+    // ── 3. Scroll cue springs in after all tagline letters are done ───
     if (scrollCueEl) {
-      const scrollCueDelay = NAME_SETTLE_MS + statementLetters.length * STAGGER_MS + SCROLL_CUE_EXTRA;
+      const scrollCueDelay = taglineStart + statementLetters.length * TAG_STAGGER_MS + SCROLL_CUE_EXTRA;
       setTimeout(() => {
         scrollCueEl.style.transition = 'transform 0.65s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.5s ease';
         scrollCueEl.style.transform  = 'none';
