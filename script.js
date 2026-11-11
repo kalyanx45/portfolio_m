@@ -533,4 +533,46 @@
 
   initCardTilt();
 
+
+  /* ======================================================================
+     9. EMAIL CLICK HANDLER — Direct Gmail Web Compose + Clipboard Copy
+     ====================================================================== */
+  const emailLink = document.getElementById('emailLink');
+  const emailIcon = document.getElementById('emailIcon');
+  const emailText = document.getElementById('emailText');
+
+  if (emailLink) {
+    emailLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      const email = 'chitramadhusudhan91@gmail.com';
+
+      // 1. Copy email address to clipboard
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(email).catch(() => {});
+      }
+
+      // 2. Open Gmail Web Compose in a new browser tab
+      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}`;
+      window.open(gmailUrl, '_blank');
+
+      // 3. Immediate visual feedback
+      if (emailText) {
+        const originalText = emailText.textContent;
+        const originalIcon = emailIcon ? emailIcon.className : '';
+        
+        emailText.textContent = 'Copied & Opening Gmail!';
+        if (emailIcon) emailIcon.className = 'fa-solid fa-check';
+        emailLink.style.borderColor = 'var(--accent)';
+        emailLink.style.boxShadow = '0 0 20px var(--accent-glow)';
+
+        setTimeout(() => {
+          emailText.textContent = originalText;
+          if (emailIcon) emailIcon.className = originalIcon;
+          emailLink.style.borderColor = '';
+          emailLink.style.boxShadow = '';
+        }, 2500);
+      }
+    });
+  }
+
 })();
